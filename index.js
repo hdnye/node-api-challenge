@@ -14,7 +14,9 @@ Go code!
 */
 const express = require('express');
 const cors = require('cors');
-
+const helmet = require('helmet');
+const actionsRouter = require('./routers/actionsRouter');
+const projectRouter = require('./routers/projectRouter');
 
 
 //API for CRUD operations
@@ -24,9 +26,19 @@ const port = process.env.PORT || 5000;
 //Middleware chain
 server.use(express.json());
 server.use(cors());
+server.use(helmet());
 
 //Router handlers
+server.use("/actions", actionsRouter);
+server.use("/projects", projectRouter);
 
+//Server error message
+server.use((err, req, res, next) => {
+    console.log(err)
+    res.status(500).json({
+        message: 'Something went wrong',
+    })
+})
 
 //server message
 server.listen(port, () => {
