@@ -18,7 +18,6 @@ router.get('/', (req, res, next) => {
     })
 })
 
-//CREATE projects wtih project_id
 
 //UPDATE action
 

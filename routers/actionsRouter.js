@@ -20,7 +20,7 @@ router.get('/', (req, res, next) => {
 })
 
 //CREATE actions wtih project_id
-router.post('/:id', validateProjectId(), (req, res, next) => {
+router.post('/:projectId', validateProjectId(), (req, res, next) => {
     const newAction = {
         project_id: req.params.project_id,
         descripton: req.body.description,
@@ -36,7 +36,19 @@ router.post('/:id', validateProjectId(), (req, res, next) => {
 })
 
 //UPDATE action
-
+router.put('/:id', (req, res, next) => {
+    actions.update(req.params.id, req.body)
+     .then((action) => {
+         console.log(action)
+         res.status(200).json(action)
+     })
+     .catch((err) => {
+         console.log(err)
+         res.status(400).json({
+             message: 'Unable to update post.',
+         })
+     })
+})
 //DELETE action
 
 //Custom Middleware
