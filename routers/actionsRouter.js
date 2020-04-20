@@ -20,7 +20,7 @@ router.get('/', (req, res, next) => {
 })
 
 //CREATE actions wtih project_id
-router.post('/:projectId', validateProjectId(), (req, res, next) => {
+router.post('/:projectId', (req, res, next) => {
     const newAction = {
         descripton: req.body.description,
         notes: req.body.notes,
@@ -32,7 +32,12 @@ router.post('/:projectId', validateProjectId(), (req, res, next) => {
         res.status(201).json(action)
         next()
     })
-    .catch(err => console.log(err))
+    .catch((err) => {
+         console.log(err)
+         res.status(404).json({
+             message: 'Unable to create new action'
+         })
+    })     
 })
 
 //UPDATE action
