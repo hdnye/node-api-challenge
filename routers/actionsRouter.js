@@ -22,10 +22,10 @@ router.get('/', (req, res, next) => {
 //CREATE actions wtih project_id
 router.post('/:projectId', validateProjectId(), (req, res, next) => {
     const newAction = {
-        project_id: req.params.project_id,
         descripton: req.body.description,
-        notes: req.body.notes 
-       }
+        notes: req.body.notes,
+        completed: false
+    }
     actions.insert(newAction)
     console.log(newAction)
     .then((action) => {
@@ -41,6 +41,7 @@ router.put('/:id', (req, res, next) => {
      .then((action) => {
          console.log(action)
          res.status(200).json(action)
+         next()
      })
      .catch((err) => {
          console.log(err)
@@ -50,23 +51,30 @@ router.put('/:id', (req, res, next) => {
      })
 })
 //DELETE action
+router.delete('/:id', (req, res, next) => {
+    actions.remove(req.params.id)
+    res.status(200).json({
+        message: 'Action has been removed.',
+    })
+})
 
 //Custom Middleware
 function validateProjectId() {
-    return async(req, res, next) => {
-        try {
-            const project = await projects.getProjectActions(req.params.id)
-            if(project) {
-                req.project = project
-                next()
-            } else {
-                res.status(404).json({
-                    message: 'Could not find project'
-                })
-            }
-        } catch(err) {
-            next(err)
-        }
+    return (req, res, next) => {
+        project.getProjectActions(req.params.projectId)
+            .then((action) => {
+                if(action) {
+                    res.json(action)
+                    next()
+                } else {
+                    res.status(404).json({
+                        message: 'Project not found.',
+                    })
+                }
+            })
+            .catch((error) => {
+                next(error)
+          })
     }
 }
 
