@@ -52,11 +52,19 @@ router.put('/:id', (req, res, next) => {
 
 
 //DELETE project
-router.delete('/:id', (req, res) => {
+router.delete('/:id', (req, res,  next) => {
     projects.remove(req.params.id)
-    res.status(200).json({
-        message: 'Project has been removed.',
+    .then((res) => {
+      res.status(200).json({
+      message: 'Project has been removed.',
     })
+  })
+  .catch((err) => {
+      console.log(err)
+      res.status(404).json({
+          message: 'Unable to remove project.',
+      })
+  })
 })
 
 //Custom Middleware
